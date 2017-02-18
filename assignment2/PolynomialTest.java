@@ -1,10 +1,14 @@
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class PolynomialTest {
     @Test
-    public void addTerm() throws Exception {
+    public void addTerm() {
         Polynomial p = new Polynomial(new Term(20, 0))
                 .add(new Polynomial(new Term(3, 2)));
         assertEquals("term added in descending order", "3.0x^2 + 20.0", p.toFormattedString());
@@ -24,7 +28,7 @@ public class PolynomialTest {
     }
 
     @Test
-    public void add() throws Exception {
+    public void add() {
         Polynomial poly1 = new Polynomial(new Term(3, 3))
                 .add(new Polynomial(new Term(2, 1)))
                 .add(new Polynomial(new Term(7, 0)));
@@ -38,7 +42,7 @@ public class PolynomialTest {
     }
 
     @Test
-    public void eval() throws Exception {
+    public void eval() {
         Polynomial poly1 = new Polynomial(new Term(3, 3))
                 .add(new Polynomial(new Term(2, 1)))
                 .add(new Polynomial(new Term(7, 0)));
@@ -51,15 +55,15 @@ public class PolynomialTest {
     }
 
     @Test
-    public void toFormattedString() throws Exception {
+    public void toFormattedString() {
         Polynomial p = new Polynomial(new Term(1, 2))
                 .add(new Polynomial(new Term(1, 1)))
                 .add(new Polynomial(new Term(1, 0)));
         assertEquals("1 as coefficient", "x^2 + x + 1.0", p.toFormattedString());
 
         p = new Polynomial(new Term(-1, 100))
-            .add(new Polynomial(new Term(-4, 2)))
-            .add(new Polynomial(new Term(-24, 0)));
+                .add(new Polynomial(new Term(-4, 2)))
+                .add(new Polynomial(new Term(-24, 0)));
         assertEquals("-1 as coefficient", "-x^100 + -4.0x^2 + -24.0", p.toFormattedString());
 
         p = new Polynomial();
@@ -68,9 +72,44 @@ public class PolynomialTest {
         p = new Polynomial(new Term(3, 5));
         assertEquals("3.0x^5", p.toFormattedString());
     }
-//
-//    @Test(expected = IndexOutOfBoundsException.class)
-//    public void empty() {
-//        new ArrayList<Object>().get(0);
-//    }
+
+    @Test
+    public void testConstructorSignatures() {
+        try {
+            // Polynomial()
+            Class[] paras = new Class[0];
+            Constructor ctor = Polynomial.class.getConstructor(paras);
+
+            // Polynomial(Term)
+            paras = new Class[1];
+            paras[0] = Term.class;
+            ctor = Polynomial.class.getConstructor(paras);
+        } catch (NoSuchMethodException e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test
+    public void testPublicFunctionSignatures() {
+        try {
+            // Polynomial.add(Polynomial) -> Polynomial
+            Class[] paras = new Class[1];
+            paras[0] = Polynomial.class;
+            Method method = Polynomial.class.getMethod("add", paras);
+            assertEquals("Polynomial.add() returns Polynomial", Polynomial.class, method.getReturnType());
+
+            // Polynomial.eval(double) -> double
+            paras = new Class[1];
+            paras[0] = double.class;
+            method = Polynomial.class.getMethod("eval", paras);
+            assertEquals("Polynomial.eval() returns double", double.class, method.getReturnType());
+
+            // Polynomial.toFormattedString() -> String
+            paras = new Class[0];
+            method = Polynomial.class.getMethod("toFormattedString", paras);
+            assertEquals("Polynomial.toFormattedString() returns String", String.class, method.getReturnType());
+        } catch (NoSuchMethodException e) {
+            fail(e.toString());
+        }
+    }
 }
