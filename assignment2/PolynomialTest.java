@@ -45,6 +45,9 @@ public class PolynomialTest {
 
         double x = 2;
         assertEquals("eval", 35, poly1.eval(x), 0.01);
+
+        x = 1.5;
+        assertEquals("eval", 20.125, poly1.eval(x), 0.01);
     }
 
     @Test
