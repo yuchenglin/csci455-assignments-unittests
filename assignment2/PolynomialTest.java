@@ -78,12 +78,12 @@ public class PolynomialTest {
         try {
             // Polynomial()
             Class[] paras = new Class[0];
-            Constructor ctor = Polynomial.class.getConstructor(paras);
+            Polynomial.class.getConstructor(paras);
 
             // Polynomial(Term)
             paras = new Class[1];
             paras[0] = Term.class;
-            ctor = Polynomial.class.getConstructor(paras);
+            Polynomial.class.getConstructor(paras);
         } catch (NoSuchMethodException e) {
             fail(e.toString());
         }
